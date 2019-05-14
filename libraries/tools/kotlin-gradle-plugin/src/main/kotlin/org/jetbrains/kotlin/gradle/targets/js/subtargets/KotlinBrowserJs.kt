@@ -58,9 +58,13 @@ class KotlinBrowserJs(target: KotlinJsTarget) :
             it.bin = "webpack-dev-server"
             it.entry = npmProject.compileOutput(compileKotlinTask)
 
-            val projectDir = target.project.projectDir.canonicalPath
             it.devServer = KotlinWebpackConfig.DevServer(
-                contentBase = listOf("$projectDir/src/main/resources")
+                open = true,
+                contentBase = compilation
+                    .defaultSourceSet
+                    .resources
+                    .srcDirs
+                    .map { resourceRoot -> resourceRoot.absolutePath }
             )
 
             it.outputs.upToDateWhen { false }
